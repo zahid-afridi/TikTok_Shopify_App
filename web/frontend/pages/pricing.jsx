@@ -1,6 +1,39 @@
 import React from "react";
 
 export default function pricing() {
+
+
+//   const [storepyament, setStorepyament] = useState('')
+//   const [refreshstate, setRefreshstate] = useState(false)
+
+
+//   useEffect(() => {
+//     const StorePyment = async () => {
+//         try {
+//             setSpinner(true)
+//             const request = await fetch(`/api/billing/storepyament?StoreId=${StoreInfo._id}`, {
+//                 Method: "GET",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                 }
+//             })
+//             const response = await request.json()
+//             setStorepyament(response.StorePayment)
+//             setSpinner(false)
+//         } catch (error) {
+//             console.log(error)
+//         }
+//     }
+//     StorePyment()
+// }, [refreshstate])
+
+
+
+
+
+
+
+
   return (
     <>
 <section id="pricing" className="pricing-area bg-gray">

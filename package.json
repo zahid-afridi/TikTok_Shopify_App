@@ -13,7 +13,10 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
-    "jquery": "^3.7.1"
+    "express": "^4.21.1",
+    "jquery": "^3.7.1",
+    "mongoose": "^8.8.0",
+    "mongoose-sequence": "^6.0.1"
   },
   "author": "Marcel Tech",
   "private": true,

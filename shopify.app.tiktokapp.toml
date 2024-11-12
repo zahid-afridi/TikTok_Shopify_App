@@ -1,14 +1,15 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "ad71179ffa4a76df41a9b7afbed89031"
-name = "TiktokApp"
-handle = "tiktokapp-5"
-application_url = "https://nl-lion-ball-routing.trycloudflare.com"
+client_id = "89a6c2bf533bdfdfc64d037e5fbbde9d"
+name = "TikTokApp"
+handle = "tiktokapp-6"
+application_url = "https://boost-lg-shirts-passes.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "affan-test.myshopify.com"
+dev_store_url = "mubashir12121.myshopify.com"
+include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -16,9 +17,9 @@ scopes = "read_content,read_locales,read_products,read_script_tags,read_themes,w
 
 [auth]
 redirect_urls = [
-  "https://nl-lion-ball-routing.trycloudflare.com/auth/callback",
-  "https://nl-lion-ball-routing.trycloudflare.com/auth/shopify/callback",
-  "https://nl-lion-ball-routing.trycloudflare.com/api/auth/callback"
+  "https://boost-lg-shirts-passes.trycloudflare.com/auth/callback",
+  "https://boost-lg-shirts-passes.trycloudflare.com/auth/shopify/callback",
+  "https://boost-lg-shirts-passes.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -122,7 +122,7 @@ const EmployeeTable = () => {
 
     if (response.ok) {
       const result = await response.json();
-      console.log('Row updated successfully:', result.data);
+      // console.log('Row updated successfully:', result.data);
       setData((prevData) =>
         prevData.map((item) =>
           item._id === currentItem._id ? { ...item, ...currentItem } : item
@@ -148,7 +148,7 @@ const EmployeeTable = () => {
       const result = await response.json();
   
       if (response.ok && result.success) {
-        console.log("Product updated successfully:", result);
+        // console.log("Product updated successfully:", result);
         // Optionally, reload the page or update UI based on success
         //window.location.reload();
       } else {
@@ -176,19 +176,19 @@ const EmployeeTable = () => {
 
   const deleteRow = async (id , s_id) => {
    // alert("wrking"+id);
+   
 
-   //alert("jfnj");
-   //alert(currentItem.shopify_product_id);
-   //alert(s_id);
+   
+
     try {
       const response = await fetch(`/api/tiktokdelete/${id}`, {
         method: "DELETE",
       });
-      console.log(response);
+      // console.log(response);
 
       if (response.ok) {
         setData(data.filter((item) => item._id !== id)); // Update the state by removing the deleted item
-        console.log("Row deleted successfully!");
+        // console.log("Row deleted successfully!");
         toast.success("Row Deleted succesfully!");
       } else {
         const result = await response.json();
@@ -208,13 +208,13 @@ const EmployeeTable = () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ s_id })
+        body: JSON.stringify({ s_id }),
       });
   
       const result = await response.json();
   
       if (response.ok && result.success) {
-        console.log("Product deleted successfully:", result.message);
+        //console.log("Product deleted successfully:", result.message);
         toast.success("Product deleted successfully:", result.message);
         // Optionally, update the UI to reflect the deleted product or reload the page
         //window.location.reload();
@@ -237,7 +237,7 @@ const EmployeeTable = () => {
   //now working with update functionaly that if user clicks on add to shopify. that update the database
 
   const insertAsProduct = (embed_url, avatar, username) => {
-    console.log("this is in function " + embed_url + " " + avatar + " " + username);
+    //console.log("this is in function " + embed_url + " " + avatar + " " + username);
 
     // Create the iframe HTML
     const makingIframe = `<iframe 
@@ -269,7 +269,7 @@ const EmployeeTable = () => {
         return response.json();
     })
     .then(response => {
-        console.log("Insert response:", JSON.stringify(response));
+       // console.log("Insert response:", JSON.stringify(response));
         return response; // Resolve with response data if needed
     })
     .catch(error => {
@@ -398,7 +398,7 @@ const EmployeeTable = () => {
       // First request to get the row of current_id from the database
       const response2 = await fetch(`/api/addtoShopifyfromlisting/${current_id}`);
       const result2 = await response2.json();
-      console.log("Row to edit", result2);
+     // console.log("Row to edit", result2);
   
       embed_url = result2.data.embed_url;
       username = result2.data.username;
@@ -428,16 +428,16 @@ const EmployeeTable = () => {
       }
   
       const json = await response.json();
-      console.log(json);
+      //console.log(json);
   
       const data = json.prd.data;
   
       if (Array.isArray(data) && data.length > 0) {
         const lastProduct = data[data.length - 1];
         lastProductId = lastProduct.id;
-        console.log("Shopify Product ID:", lastProductId);
+        //console.log("Shopify Product ID:", lastProductId);
       } else {
-        console.log("No products found.");
+        //console.log("No products found.");
         alert("No products found in Shopify!");
         setButtonLoading((prev) => ({ ...prev, [cid]: false }));
         return;
@@ -452,12 +452,9 @@ const EmployeeTable = () => {
       try {
         await updateProductInDatabase(dbId, lastProductId);
   
-        // Update the item's state to reflect "uploaded"
-        setData((prevData) =>
-          prevData.map((item) =>
-            item._id === cid ? { ...item, is_shopify: 1 } : item
-          )
-        );
+        //this one error solved for deleting 
+
+        fetchData();
   
         toast.success("Product uploaded successfully!");
       } catch (error) {
@@ -487,7 +484,14 @@ const EmployeeTable = () => {
   
         const result = await response.json();
         if (response.ok) {
-            console.log("Product updated successfully:", result);
+            //console.log("Product updated successfully:", result);
+
+            // setData((prevData) => {
+            //   return prevData.map((item) => ({
+            //     ...item,
+            //     shopify_product_id: item.shopify_product_id || null, // Ensure it exists
+            //   }));
+            // });
 
         } else {
             console.error("Error updating product:", result.message);

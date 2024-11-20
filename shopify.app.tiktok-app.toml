@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "8c92bf1c7b84097f33c3cca54fe528ab"
-application_url = "https://rico-cheque-tournament-belt.trycloudflare.com"
+application_url = "https://nut-placing-morris-resulting.trycloudflare.com"
 embedded = true
 name = "TikTok_App"
 handle = "tiktok_app"
@@ -20,9 +20,9 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://rico-cheque-tournament-belt.trycloudflare.com/auth/callback",
-  "https://rico-cheque-tournament-belt.trycloudflare.com/auth/shopify/callback",
-  "https://rico-cheque-tournament-belt.trycloudflare.com/api/auth/callback"
+  "https://nut-placing-morris-resulting.trycloudflare.com/auth/callback",
+  "https://nut-placing-morris-resulting.trycloudflare.com/auth/shopify/callback",
+  "https://nut-placing-morris-resulting.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

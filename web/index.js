@@ -100,34 +100,33 @@ app.get('/api/store/info', async (req, res) => {
     const Store = await shopify.api.rest.Shop.all({
       session: res.locals.shopify.session,
     });
-    // console.log("Storename",Store.data[0].domain)
-      // console.log('Store Information',Store)
+
     if (Store && Store.data && Store.data.length > 0) {
       const storeName = Store.data[0].name;
       const domain = Store.data[0].domain;
-      const country=Store.data[0].country;
-      const Store_Id=Store.data[0].id
-     
+      const country = Store.data[0].country;
+      const Store_Id = Store.data[0].id;
 
       // Check if storeName exists in the database
-      const existingStore = await StoreModel.findOne({ storeName });
+      let existingStore = await StoreModel.findOne({ storeName });
 
       if (!existingStore) {
         // If it doesn't exist, save it
-        const newStore = new StoreModel({ storeName,domain,country,Store_Id });
+        const newStore = new StoreModel({ storeName, domain, country, Store_Id });
         await newStore.save();
 
-        const billingRecord = new BillingModel({
+        // Create billing entry for the new store
+        await BillingModel.create({
           store_id: Store_Id,
           tiktokProductNumber: 10,
         });
-        await billingRecord.save();
 
-
+        // Set the response to the newly created store
+        existingStore = newStore;
       }
 
-      // Send response with existingStore only
-      res.status(200).json(existingStore); // Send existingStore directly in the response
+      // Send response with the store information
+      res.status(200).json(existingStore); // Send the existing or newly created store
     } else {
       res.status(404).json({ message: 'Store not found' });
     }
@@ -136,6 +135,7 @@ app.get('/api/store/info', async (req, res) => {
     res.status(500).json({ message: "Internal server Error" });
   }
 });
+
 // store info api end
 
 

@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { NavMenu } from "@shopify/app-bridge-react";
+import  { Toaster } from 'react-hot-toast'
 import Routes from "./Routes";
 
 import { QueryProvider, PolarisProvider } from "./components";
@@ -16,6 +17,7 @@ export default function App() {
   return (
     <PolarisProvider>
       <BrowserRouter>
+      <Toaster></Toaster>
         <QueryProvider>
           <NavMenu>
             <a href="/" rel="home" />

@@ -6,17 +6,25 @@ const BillingShecma= new mongoose.Schema({
     },
     status:{
         type:String,
+        default: null,
     },
     price:{
         type:String,
+        default: null,
     },
     billingId:{
-        type:String
+        type:String,
+        default: null,
     },
     packagename:{
-        type:String
+        type:String,
+        default: null,
     },
     tiktokProductNumber:{
+        type:Number,
+        default:0
+    },
+    tiktokProductPlan:{
         type:Number,
         default:0
     },

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect , useRef} from "react";
 import tikokImage from "../assets/img/side.webp";
+import toast from "react-hot-toast";
 const EmployeeTable = () => {
 
   const [data, setData] = useState([]);
@@ -11,16 +12,57 @@ const EmployeeTable = () => {
   //end
   const modalRef = useRef(null);
 
+  const [buttonLoading, setButtonLoading] = useState({}); // Object to track loading state for each row
+
+
+
+  const [storeInfo, setStoreInfo] = useState(null);
+  const [storeloading, setStoreLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [storedata, setStoreData] = useState(null);
+
+
 
   useEffect(() => {
-    fetchData();
+    const fetchStoreInfo = async () => {
+      try {
+        const response = await fetch('/api/store/info');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch store info');
+        }
+        
+        const data = await response.json();
+        setStoreInfo(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStoreInfo();
   }, []);
+
+
+   // Fetch TikTok data after storeInfo is set
+   useEffect(() => {
+    if (storeInfo) {
+      fetchData();
+    }
+  }, [storeInfo]);
+
+
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/tiktokdata');
-      const result = await response.json(); 
-      console.log("Gul ",result)
+       
+      
+      //alert(storeInfo.Store_Id);
+      
+      // Store_Id should now be available here
+      const response = await fetch(`/api/tiktokdata?storeId=${storeInfo.Store_Id}`);
+      const result = await response.json();
 
       if (response.ok && result.data) {
         setData(result.data);
@@ -30,9 +72,17 @@ const EmployeeTable = () => {
     } catch (error) {
       console.error("error ", error);
     } finally {
-      setLoading(false); // Stop loading once data fetch is complete
+      setLoading(false);
     }
   };
+
+
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error: {error}</p>;
+
+
+
+
 
   //update function
   // Triggered when the update button is clicked
@@ -53,13 +103,15 @@ const EmployeeTable = () => {
   
   // Handle form submission (sending update request to backend)
   const handleUpdateSubmit = async (e) => {
+
+
     e.preventDefault(); // Prevent the default form submission
       // alert(currentItem.shopify_product_id);
       // alert(currentItem.username);
       // alert(currentItem.description);
       let s_id = currentItem.shopify_product_id;
       let title = currentItem.username;
-      let body_html = currentItem.description;
+      //let body_html = currentItem.description;
     const response = await fetch(`/api/tiktokedit/${currentItem._id}`, {
       method: 'PUT',
       headers: {
@@ -90,7 +142,7 @@ const EmployeeTable = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ title, body_html })
+        body: JSON.stringify({ title })
       });
   
       const result = await response.json();
@@ -98,7 +150,7 @@ const EmployeeTable = () => {
       if (response.ok && result.success) {
         console.log("Product updated successfully:", result);
         // Optionally, reload the page or update UI based on success
-        window.location.reload();
+        //window.location.reload();
       } else {
         console.error("Failed to update product:", result.message);
         // Optionally, show an error message on the UI
@@ -122,8 +174,12 @@ const EmployeeTable = () => {
   //delete function
 
 
-  const deleteRow = async (id) => {
+  const deleteRow = async (id , s_id) => {
    // alert("wrking"+id);
+
+   //alert("jfnj");
+   //alert(currentItem.shopify_product_id);
+   //alert(s_id);
     try {
       const response = await fetch(`/api/tiktokdelete/${id}`, {
         method: "DELETE",
@@ -133,13 +189,48 @@ const EmployeeTable = () => {
       if (response.ok) {
         setData(data.filter((item) => item._id !== id)); // Update the state by removing the deleted item
         console.log("Row deleted successfully!");
+        toast.success("Row Deleted succesfully!");
       } else {
         const result = await response.json();
         console.error("Error deleting row: ", result.message);
       }
     } catch (error) {
       console.error("Error deleting row: ", error);
+      //alert("error"+error);
+      toast.error("Error deleting row: ", error);
     }
+
+    //now we will delete from shopify db product delete api
+
+    try {
+      const response = await fetch("/api/delprd", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ s_id })
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok && result.success) {
+        console.log("Product deleted successfully:", result.message);
+        toast.success("Product deleted successfully:", result.message);
+        // Optionally, update the UI to reflect the deleted product or reload the page
+        //window.location.reload();
+      } else {
+        console.error("Failed to delete product:", result.message);
+        toast.error("Failed to delete product:", result.message);
+        // Optionally, show an error message on the UI
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error.message);
+      toast.error("Error deleting product:", error.message);
+      // Optionally, show an error message on the UI
+    }
+
+
+
   };
 
 
@@ -191,76 +282,99 @@ const EmployeeTable = () => {
 
 
 
-const addToShopify = async (cid) => {
-  //alert("working!"+cid);
+// const addToShopify = async (cid) => {
+//   //alert("working!"+cid);
 
-  let lastProductId; // Define outside to retain scope
-  let dbId = cid;
-  let embed_url;
-  let username;
-  let avatar;
-  let current_id = cid;
+//   setButtonLoading((prev) => ({ ...prev, [cid]: true }));
 
-  // First request to get the row of current_id from db 
-  try {
-    const id = current_id; // Replace with the actual ID you want to send
-    const response2 = await fetch(`/api/addtoShopifyfromlisting/${id}`); // Pass id as path parameter
+
+//   let lastProductId; // Define outside to retain scope
+//   let dbId = cid;
+//   let embed_url;
+//   let username;
+//   let avatar;
+//   let current_id = cid;
+
+//   // First request to get the row of current_id from db 
+//   try {
+//     const id = current_id; // Replace with the actual ID you want to send
+//     const response2 = await fetch(`/api/addtoShopifyfromlisting/${id}`); // Pass id as path parameter
   
-    const result2 = await response2.json();
-    console.log("Row to edit", result2);
+//     const result2 = await response2.json();
+//     console.log("Row to edit", result2);
   
-    embed_url = result2.data.embed_url;
-    username = result2.data.username;
-    avatar = result2.data.avatar;
+//     embed_url = result2.data.embed_url;
+//     username = result2.data.username;
+//     avatar = result2.data.avatar;
   
-  } catch (error2) {
-    console.error("Error fetching database product data:", error2.message);
-    return;
-  }
+//   } catch (error2) {
+//     console.error("Error fetching database product data:", error2.message);
+//     alert("Error fetching database product data:")
+//     return;
+//   }
   
 
 
-  // Insert data into Shopify product
-  try {
-      await insertAsProduct(embed_url, avatar, username); // Wait for insertion to complete
-  } catch (error) {
-      console.error("Error inserting product into Shopify:", error.message);
-      return;
-  }
+//   // Insert data into Shopify product
+//   try {
+//       await insertAsProduct(embed_url, avatar, username); // Wait for insertion to complete
+//   } catch (error) {
+//       console.error("Error inserting product into Shopify:", error.message);
+//       alert("Error inserting product into Shopify:")
+//       return;
+//   }
 
-  // Second request to get the Shopify product ID
-  const url = "/api/testprd";
-  try {
-      const response = await fetch(url);
-      if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-      }
+//   // Second request to get the Shopify product ID
+//   const url = "/api/testprd";
+//   try {
+//       const response = await fetch(url);
+//       if (!response.ok) {
+//           throw new Error(`Response status: ${response.status}`);
+//       }
 
-      const json = await response.json();
-      console.log(json);
+//       const json = await response.json();
+//       console.log(json);
 
-      const data = json.prd.data;
+//       const data = json.prd.data;
 
-      if (Array.isArray(data) && data.length > 0) {
-          const lastProduct = data[data.length - 1];
-          lastProductId = lastProduct.id;
-          console.log("Shopify Product ID:", lastProductId);
-      } else {
-          console.log("No products found.");
-      }
-  } catch (error) {
-      console.error("Error fetching Shopify product data:", error.message);
-      return;
-  }
+//       if (Array.isArray(data) && data.length > 0) {
+//           const lastProduct = data[data.length - 1];
+//           lastProductId = lastProduct.id;
+//           console.log("Shopify Product ID:", lastProductId);
+//       } else {
+//           console.log("No products found.");
+//           alert("no products found in shopify!")
+//       }
+//   } catch (error) {
+//       console.error("Error fetching Shopify product data:", error.message);
+//       return;
+//   }
 
-  // Now we have both the IDs, proceed to update the product in the database
-  if (dbId && lastProductId) {
-      updateProductInDatabase(dbId, lastProductId);
-      window.location.reload();
-  } else {
-      console.error("Failed to retrieve necessary IDs for updating the database.");
-  }
-};
+//   // Now we have both the IDs, proceed to update the product in the database
+//   if (dbId && lastProductId) {
+//       updateProductInDatabase(dbId, lastProductId);
+//       //window.location.reload();
+//       setButtonLoading((prev) => ({ ...prev, [cid]: false })); // Reset loading state for the row
+
+     
+
+
+
+//       toast.success('success');
+
+//      // setData(data.filter((item) => item._id !== cid)); // Update the state by removing the deleted item
+//       //window.location.reload();
+
+//       // setRefresh((prev)=>!prev);
+
+
+      
+
+//   } else {
+//       console.error("Failed to retrieve necessary IDs for updating the database.");
+//       alert("Failed to retrieve necessary IDs for updating the database.");
+//   }
+// };
 
 
 
@@ -268,6 +382,101 @@ const addToShopify = async (cid) => {
 
 //chatgpt function for update 
   // Function to update the product in the database
+ 
+  
+  const addToShopify = async (cid) => {
+    setButtonLoading((prev) => ({ ...prev, [cid]: true }));
+  
+    let lastProductId;
+    let dbId = cid;
+    let embed_url;
+    let username;
+    let avatar;
+    let current_id = cid;
+  
+    try {
+      // First request to get the row of current_id from the database
+      const response2 = await fetch(`/api/addtoShopifyfromlisting/${current_id}`);
+      const result2 = await response2.json();
+      console.log("Row to edit", result2);
+  
+      embed_url = result2.data.embed_url;
+      username = result2.data.username;
+      avatar = result2.data.avatar;
+    } catch (error2) {
+      console.error("Error fetching database product data:", error2.message);
+      alert("Error fetching database product data:");
+      setButtonLoading((prev) => ({ ...prev, [cid]: false }));
+      return;
+    }
+  
+    try {
+      // Insert data into Shopify product
+      await insertAsProduct(embed_url, avatar, username);
+    } catch (error) {
+      console.error("Error inserting product into Shopify:", error.message);
+      alert("Error inserting product into Shopify:");
+      setButtonLoading((prev) => ({ ...prev, [cid]: false }));
+      return;
+    }
+  
+    try {
+      // Second request to get the Shopify product ID
+      const response = await fetch("/api/testprd");
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+  
+      const json = await response.json();
+      console.log(json);
+  
+      const data = json.prd.data;
+  
+      if (Array.isArray(data) && data.length > 0) {
+        const lastProduct = data[data.length - 1];
+        lastProductId = lastProduct.id;
+        console.log("Shopify Product ID:", lastProductId);
+      } else {
+        console.log("No products found.");
+        alert("No products found in Shopify!");
+        setButtonLoading((prev) => ({ ...prev, [cid]: false }));
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching Shopify product data:", error.message);
+      setButtonLoading((prev) => ({ ...prev, [cid]: false }));
+      return;
+    }
+  
+    if (dbId && lastProductId) {
+      try {
+        await updateProductInDatabase(dbId, lastProductId);
+  
+        // Update the item's state to reflect "uploaded"
+        setData((prevData) =>
+          prevData.map((item) =>
+            item._id === cid ? { ...item, is_shopify: 1 } : item
+          )
+        );
+  
+        toast.success("Product uploaded successfully!");
+      } catch (error) {
+        console.error("Error updating product in database:", error.message);
+        alert("Error updating product in database.");
+      }
+    } else {
+      console.error("Failed to retrieve necessary IDs for updating the database.");
+      alert("Failed to retrieve necessary IDs for updating the database.");
+    }
+  
+    setButtonLoading((prev) => ({ ...prev, [cid]: false })); // Reset loading state for the row
+  };
+  
+ 
+ 
+ 
+ 
+ 
   const updateProductInDatabase = async (dbId, shopifyProductId) => {
     try {
         const response = await fetch("/api/addtoShopify", {
@@ -292,6 +501,39 @@ const addToShopify = async (cid) => {
   return (
     <>
       <div className="container m-auto my-5">
+
+
+
+
+
+
+
+      {/* <div>
+      <h1>Store Information</h1>
+      {storeInfo && (
+        <div>
+          <p>Store Name: {storeInfo.storeName}</p>
+          <p>Store Domain: {storeInfo.domain}</p>
+          <p>Country: {storeInfo.country}</p>
+          <p>Store ID: {storeInfo.Store_Id}</p>
+        </div>
+      )}
+      <h1>Data</h1>
+      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>No data available</p>}
+    </div> */}
+
+
+
+
+
+
+
+        <p>{loading}</p>
+
+
+
+
+
         <div className="table-box-info">
           <div className="form d-flex position-relative" style={{ width: "35%" }}>
             <input
@@ -369,12 +611,11 @@ const addToShopify = async (cid) => {
                       />
                     </td>
                     <td>{item.username}</td>
+                   
                     <td>{item.description}</td>
                     <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                   
-                    {/* <td>
-                      <a href={item.embed_url} target="_blank" rel="noopener noreferrer">Embed</a>
-                    </td> */}
+                    
 
 
 
@@ -455,7 +696,7 @@ const addToShopify = async (cid) => {
                   </a>
                 </td>
                 <td>
-                  <button  onClick={() => deleteRow(item._id)} style={{ marginTop: "13px" }}>
+                  <button  onClick={() => deleteRow(item._id , item.shopify_product_id)} style={{ marginTop: "13px" }}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       version="1.1"
@@ -485,13 +726,44 @@ const addToShopify = async (cid) => {
                     </svg>
                   </button>
                 </td>
-                <td>
+                {/* <td>
   {item.is_shopify === 1 ? (
-    "Uploaded!"
+            <button className="shopify_btn btn bg-success text-white display-6" disabled>Uploaded!</button>
   ) : (
-    <button onClick={() => addToShopify(item._id)}>Add to Shopify</button>
+    // <button class="btn-danger" disabled={buttonLoading} onClick={() => addToShopify(item._id)}>
+    //   { buttonLoading ?  'loading...': 'Add to Shopify'}
+    // </button>
+    
+
+
+<button
+      className="shopify_btn btn bg-success text-white display-6"
+      disabled={buttonLoading[item._id]} // Check loading state for this specific row
+      onClick={() => addToShopify(item._id)}
+    >
+
+
+          {buttonLoading[item._id] ? "Loading..." : "Add to Shopify"}
+    </button>
+  )}
+</td> */}
+
+<td>
+  {item.is_shopify === 1 ? (
+    <button className="shopify_btn btn bg-success text-white display-6" disabled>
+      Uploaded!
+    </button>
+  ) : (
+    <button
+      className="shopify_btn btn bg-success text-white display-6"
+      disabled={buttonLoading[item._id]}
+      onClick={() => addToShopify(item._id)}
+    >
+      {buttonLoading[item._id] ? "Loading..." : "Add to Shopify"}
+    </button>
   )}
 </td>
+
 
 
 
@@ -499,7 +771,7 @@ const addToShopify = async (cid) => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center">No data available</td>
+                  {/* <td colSpan="7" className="text-center">No data available</td> */}
                 </tr>
               )}
             </tbody>
@@ -609,7 +881,7 @@ const addToShopify = async (cid) => {
             className="form-control"
           />
         </div>
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <input
             type="text"
             name="description"
@@ -618,7 +890,7 @@ const addToShopify = async (cid) => {
             placeholder="Description"
             className="form-control"
           />
-        </div>
+        </div> */}
             
          
         </div>

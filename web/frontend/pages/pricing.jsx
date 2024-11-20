@@ -1,31 +1,161 @@
-import React from "react";
+import React, { useState , useEffect } from "react";
 
 export default function pricing() {
 
+//const [price , setPrice] = useState(null);
 
-//   const [storepyament, setStorepyament] = useState('')
-//   const [refreshstate, setRefreshstate] = useState(false)
+//const [pkgName , setPkgName] = useState(null);
+
+const [imporRequests , setImportRequests] = useState(null);
 
 
-//   useEffect(() => {
-//     const StorePyment = async () => {
-//         try {
-//             setSpinner(true)
-//             const request = await fetch(`/api/billing/storepyament?StoreId=${StoreInfo._id}`, {
-//                 Method: "GET",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                 }
-//             })
-//             const response = await request.json()
-//             setStorepyament(response.StorePayment)
-//             setSpinner(false)
-//         } catch (error) {
-//             console.log(error)
-//         }
-//     }
-//     StorePyment()
-// }, [refreshstate])
+const [storeInfo, setStoreInfo] = useState(null);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+
+useEffect(() => {
+  // Fetch store information from the backend API
+  const fetchStoreInfo = async () => {
+    try {
+      const response = await fetch('/api/store/info');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch store info');
+      }
+      
+      const data = await response.json();
+      console.log("store data",data);
+      setStoreInfo(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchStoreInfo();
+}, []);
+
+
+
+
+// useEffect(() => {
+//   if (storeInfo) {
+//     staticData();
+//   }
+// }, [storeInfo]);
+
+
+
+  
+  // const staticData = async () => {
+    
+  //   setPrice(45);
+  //   setPkgName("Super Duper Plan");
+  //   setImportRequests(50);
+
+  // };
+
+
+
+
+
+
+async function billingApi(prds , pkgn , price) {
+
+
+  //taking url
+  //alert(prds+pkgn+price);
+
+
+
+
+  let pkg_prd = prds;
+  let name = pkgn;
+  let pkg_price = price;
+  let url = `https://${storeInfo.domain}/admin/apps/89a6c2bf533bdfdfc64d037e5fbbde9d`;
+
+
+  try {
+    const response = await fetch("/api/paymentCheck", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Set content type to JSON
+      },
+      body: JSON.stringify({ name, pkg_price, url }), // Send package data
+    });
+
+    const mydata = await response.json();
+    console.log("Payment API response MMK:", mydata);
+      // data.status;
+      // data.price;
+      // data.name; //pkg name
+      // data.id; //billing id
+
+      let cm_status = mydata.recurring_application_charge.status;
+      let cm_price = mydata.recurring_application_charge.price;
+      let cm_pkg_name = mydata.recurring_application_charge.name;
+      let cm_billing_id = mydata.recurring_application_charge.id;
+
+
+      
+     
+
+    if (response.ok) {
+
+      //this data is getting from billing api which i am passing through function
+
+      const increment_result = await incrementPrdNum(cm_status, cm_price , cm_pkg_name , cm_billing_id , pkg_prd);
+      console.log(increment_result);
+
+      // Redirect to the confirmation URL if provided
+      //console.log()
+      window.open(mydata.recurring_application_charge.confirmation_url);
+
+
+
+
+    }
+  } catch (error) {
+    console.error("Error in payment API:", error.message);
+  }
+
+}
+
+
+
+
+async function incrementPrdNum(c_status , c_price , c_pkg_name , c_billing_id , c_pkg_prd) {
+  //alert(storeInfo.Store_Id);
+  //alert(c_status);
+    
+  try {
+    const response = await fetch(`/api/billing/IncPrdNums?storeId=${storeInfo.Store_Id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ c_status, c_price, c_pkg_name , c_billing_id , c_pkg_prd }), // Send data
+
+      
+      
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to increment product number');
+    }
+
+    const data = await response.json();
+    console.log('Product number increment updated successfully:', data);
+
+    return data; // Return the response data if needed for further use
+
+  } catch (error) {
+    console.error('Error updating product number:', error);
+  }
+}
+
 
 
 
@@ -151,12 +281,12 @@ export default function pricing() {
               <i className="fas fa-ribbon"></i>
             </li>
             <li className="pricing-header rounded-4">
-              <h4>Regular</h4>
+              <h4>   Super Duper Plan   </h4>
               <h2>
-                <sup>$</sup>29 <sub>/ Year</sub>
+                <sup>$</sup> 45 <sub>/ Year</sub>
               </h2>
             </li>
-            <li>Demo file</li>
+            <li>Get 50 requests!</li>
             <li>
               Update{" "}
               <span
@@ -182,7 +312,7 @@ export default function pricing() {
             <li>5 database</li>
             <li>Documentation</li>
             <li className="footer">
-              <a className="btn btn-theme effect btn-sm rounded-5" href="#">
+              <a className="btn btn-theme effect btn-sm rounded-5" href="#" onClick={() => billingApi(50, 'Super Duper Plan' , 45)}>
                 Get Started
               </a>
             </li>
@@ -247,8 +377,8 @@ export default function pricing() {
               </span>
             </li>
             <li className="footer">
-              <a className="btn btn-dark border btn-sm rounded-5 rounded-5" href="#">
-                Try for free
+            <a className="btn btn-theme effect btn-sm rounded-5" href="#" onClick={() => billingApi(100, 'Super Duper Plan' , 90)}>
+                Get Started
               </a>
             </li>
           </ul>

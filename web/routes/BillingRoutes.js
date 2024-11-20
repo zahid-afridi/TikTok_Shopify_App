@@ -1,17 +1,20 @@
  import express from 'express'
 // import { GetPyament, UserPay,StorePyment, FreePakage, custompakage, getcustompakage } from '../controllers/Billing.js'
 
- import { StorePyment } from '../controllers/Billing.js'
-
+import {getProductNumber, incrementFifty, IncrementTicktokProductNumber, updateTicktokProductNumber} from '../controllers/Billing.js';
 
  const BillingRoutes=express.Router()
 
-// BillingRoutes.post('/userpay',UserPay)
-// BillingRoutes.get('/GetPayment',GetPyament)
- BillingRoutes.get('/storepyament',StorePyment)
-// BillingRoutes.post('/freepakage',FreePakage)
-// BillingRoutes.post('/custompakage',custompakage)
-// BillingRoutes.get('/getcustompakage',getcustompakage)
+
+//yaaan sy mubashir ka kaam 
+
+
+BillingRoutes.get('/ticktokPrdNums' , getProductNumber);
+BillingRoutes.put('/decremenrPrdNums' , updateTicktokProductNumber);
+BillingRoutes.put('/IncPrdNums' , IncrementTicktokProductNumber);
+BillingRoutes.put('/IncFifty' , incrementFifty);
+
+
 
 
  export default BillingRoutes

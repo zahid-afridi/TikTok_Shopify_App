@@ -7,8 +7,9 @@ import TiktokModel from "../model/Tiktok.js"
 export const TiktokImport = async (req, res) => {
     try {
       
-      const { url } = req.body;
+      const { url , store_id} = req.body;
       console.log("Incoming URL:", url);
+      console.log("this is store Id ",store_id);
   
      
       const apiUrl = `https://tiktok-video-downloader-api.p.rapidapi.com/media?videoUrl=${url}`;
@@ -41,6 +42,7 @@ export const TiktokImport = async (req, res) => {
         avatar: data.author.avatar,
         embed_url: made_url,
         check_count:1,
+        shop_id: store_id,
       });
   
       // Save the new record to the database
@@ -66,7 +68,16 @@ export const TiktokImport = async (req, res) => {
 
     try{
 
-      const records = await TiktokModel.find();
+      const { storeId } = req.query;
+
+      console.log("it is in fetch data ",storeId);
+
+      if (!storeId) {
+        return res.status(400).json({ message: 'Store_Id is required' });
+      }
+
+      const records = await TiktokModel.find({ shop_id:storeId });
+      console.log('fetcjomgrepddlfksd;l',records)
       res.status(200).json({message:"Fetching Success!",
         data: records
       });

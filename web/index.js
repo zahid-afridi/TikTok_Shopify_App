@@ -116,6 +116,14 @@ app.get('/api/store/info', async (req, res) => {
         // If it doesn't exist, save it
         const newStore = new StoreModel({ storeName,domain,country,Store_Id });
         await newStore.save();
+
+        const billingRecord = new BillingModel({
+          store_id: Store_Id,
+          tiktokProductNumber: 10,
+        });
+        await billingRecord.save();
+
+
       }
 
       // Send response with existingStore only
@@ -223,20 +231,13 @@ app.put("/api/prdUpd/:productId", async (req, res) => {
   try {
     // Extract the productId from req.params and the updated fields from req.body
     const { productId } = req.params;
-    const { title, body_html } = req.body;
+    const { title } = req.body;
 
     // Create a new product instance using the Shopify API, set its fields, and assign the product ID
     const product = new shopify.api.rest.Product({ session: res.locals.shopify.session });
     product.id = productId;  // Assign the ID from the route parameter
     product.title = title;
-    product.body_html = `<iframe 
-        src="${body_html}" 
-        width="100%" 
-        height="600" 
-        frameborder="0" 
-        scrolling="no" 
-        allow="autoplay; encrypted-media" 
-        allowfullscreen></iframe>`;
+    
 
     // Save the product update
     await product.save({
@@ -250,6 +251,99 @@ app.put("/api/prdUpd/:productId", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
+//ends
+
+
+//product delete api 
+app.delete("/api/delprd", async (req, res) => {
+  try {
+    const { s_id } = req.body; // Get product ID from request body
+    if (!s_id) {
+      return res.status(400).json({ success: false, message: "Product ID is required" });
+    }
+
+    const prd = await shopify.api.rest.Product.delete({
+      session: res.locals.shopify.session,
+      id:s_id, // Use dynamic product ID
+    });
+
+    res.status(200).json({ success: true, message: "Product deleted successfully", prd });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+//ends
+
+//Now starting payment wordBreak: 
+//shopify payment animationPlayState: 
+
+app.post("/api/paymentCheck", async (req, res) => {
+  try {
+
+    
+    //const {pkg_name , price , url}=req.body;
+
+    const { name, pkg_price, url } = req.body;
+
+    if (!name || !pkg_price || !url) {
+      return res.status(400).json({ success: false, message: "Invalid request. Missing parameters." });
+    }
+
+    const recurring_application_charge = new shopify.api.rest.RecurringApplicationCharge({session: res.locals.shopify.session});
+    recurring_application_charge.name = name;
+    recurring_application_charge.price = pkg_price;
+    recurring_application_charge.return_url = url;
+    recurring_application_charge.trial_days = 5;
+    //recurring_application_charge.return_url='';
+    // recurring_application_charge.capped_amount=1000;
+    // recurring_application_charge.terms="yes it will be ";
+    recurring_application_charge.test=true;
+    await recurring_application_charge.save({
+      update: true,
+    });
+
+
+    res.status(200).json({success:true,message:"payment api working form backend",recurring_application_charge})
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({success:false,message:"internal sever error"})
+    
+  }
+});
+
+
+
+
+//checking get usage charge
+
+
+app.get("/api/usageChargeGet", async (req, res) => {
+  try {
+   const {charge_id} = req.query;
+
+    const data =  await shopify.api.rest.RecurringApplicationCharge.find({
+      session: res.locals.shopify.session,
+      id:charge_id,
+    });
+
+
+  
+  
+    
+    res.status(200).json({success:true,message:"data get working usage api",data})
+  } catch (error) {
+    console.log('not working mm',error)
+    res.status(500).json({success:false,message:"internal sever eroro"})
+    
+  }
+});
+
+
+
+
 
 
 app.use(shopify.cspHeaders());

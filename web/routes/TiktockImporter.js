@@ -5,7 +5,8 @@ import {TiktokImport , fetchData , deleteData, editData, getLastDocument, update
 const TiktokImporterRoutes=express.Router()
 
 TiktokImporterRoutes.post('/tiktokvideo',TiktokImport)
-TiktokImporterRoutes.get('/tiktokdata',fetchData)
+//TiktokImporterRoutes.get('/tiktokdata/:storeId',fetchData)
+TiktokImporterRoutes.get('/tiktokdata', fetchData);
 TiktokImporterRoutes.delete('/tiktokdelete/:id',deleteData)
 TiktokImporterRoutes.put('/tiktokedit/:id',editData)
 TiktokImporterRoutes.get('/tiktokLastRow',getLastDocument)

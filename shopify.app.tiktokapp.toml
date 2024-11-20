@@ -3,7 +3,7 @@
 client_id = "89a6c2bf533bdfdfc64d037e5fbbde9d"
 name = "TikTokApp"
 handle = "tiktokapp-6"
-application_url = "https://boost-lg-shirts-passes.trycloudflare.com"
+application_url = "https://pdf-have-removing-farming.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_content,read_locales,read_products,read_script_tags,read_themes,w
 
 [auth]
 redirect_urls = [
-  "https://boost-lg-shirts-passes.trycloudflare.com/auth/callback",
-  "https://boost-lg-shirts-passes.trycloudflare.com/auth/shopify/callback",
-  "https://boost-lg-shirts-passes.trycloudflare.com/api/auth/callback"
+  "https://pdf-have-removing-farming.trycloudflare.com/auth/callback",
+  "https://pdf-have-removing-farming.trycloudflare.com/auth/shopify/callback",
+  "https://pdf-have-removing-farming.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

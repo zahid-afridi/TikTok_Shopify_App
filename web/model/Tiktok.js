@@ -32,6 +32,9 @@ const tiktokSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  shop_id: {
+    type: String,
+  },
 }, { timestamps: true });
 
 // Apply the mongoose-sequence plugin to `check_count`

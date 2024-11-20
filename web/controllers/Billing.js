@@ -235,7 +235,11 @@ const incrementFifty = async (req, res) => {
   }
 };
 
+
+
+
+
   
 
 
- export {getProductNumber , updateTicktokProductNumber , IncrementTicktokProductNumber, incrementFifty}
+ export {getProductNumber , updateTicktokProductNumber , IncrementTicktokProductNumber, incrementFifty }

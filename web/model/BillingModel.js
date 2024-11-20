@@ -29,6 +29,7 @@ const BillingShecma= new mongoose.Schema({
         default:0
     },
     
+    
 },{timestamps:String})
 
 const BillingModel= mongoose.model('store_billings',BillingShecma)

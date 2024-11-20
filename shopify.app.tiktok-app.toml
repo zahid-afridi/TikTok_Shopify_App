@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "8c92bf1c7b84097f33c3cca54fe528ab"
+application_url = "https://rico-cheque-tournament-belt.trycloudflare.com"
+embedded = true
+name = "TikTok_App"
+handle = "tiktok_app"
+
+[build]
+include_config_on_deploy = true
+dev_store_url = "paymenttest-store.myshopify.com"
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2024-10"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = ""
+
+[auth]
+redirect_urls = [
+  "https://rico-cheque-tournament-belt.trycloudflare.com/auth/callback",
+  "https://rico-cheque-tournament-belt.trycloudflare.com/auth/shopify/callback",
+  "https://rico-cheque-tournament-belt.trycloudflare.com/api/auth/callback"
+]
+
+[pos]
+embedded = false

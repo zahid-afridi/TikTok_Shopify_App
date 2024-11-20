@@ -1,9 +1,12 @@
-import React, { useState, useRef , useEffect } from 'react';
+import React, { useState, useRef , useEffect, useContext } from 'react';
 import ReactPlayer from 'react-player';
 import {useNavigate} from 'react-router-dom'
 import toast from "react-hot-toast";
+import { StoreConext } from '../App';
 
 export default function Index() {
+  const storedata=useContext(StoreConext)
+   console.log('store data from state',storedata)
   const navigate=useNavigate()
   const [url, setUrl] = useState('');
   const [videoUrl, setVideoUrl] = useState('');

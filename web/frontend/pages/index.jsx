@@ -410,6 +410,9 @@ export default function Index() {
       const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
       bootstrapModal.hide();
 
+      //stoping the video
+      stopVideo();
+
       //alert("Added Succesfully!");
     } else {
       console.error(

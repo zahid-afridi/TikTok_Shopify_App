@@ -18,6 +18,12 @@ import BillingModel from "./model/BillingModel.js";
 
 import BillingRoutes from "./routes/BillingRoutes.js";
 
+import PkgRoute from "./routes/PkgsRoute.js";
+
+import TikTok_Packages_Modal from "./model/TikTokPackges.js";
+
+
+
 
 
 
@@ -67,6 +73,8 @@ app.use(express.json());
 
 app.use('/api',TiktokImporterRoutes)
 app.use('/api/billing',BillingRoutes)
+app.use('/api/pkg',PkgRoute)
+
 
 
 

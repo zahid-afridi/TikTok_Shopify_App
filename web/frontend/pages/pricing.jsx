@@ -1,4 +1,5 @@
 import React, { useState , useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function pricing() {
 
@@ -12,6 +13,12 @@ const [imporRequests , setImportRequests] = useState(null);
 const [storeInfo, setStoreInfo] = useState(null);
 const [loading, setLoading] = useState(true);
 const [error, setError] = useState(null);
+
+//pkgdata     desc ,  name  ,  price , productNumbers
+
+const [packages , setPackages] = useState([]);
+
+
 
 
 useEffect(() => {
@@ -35,6 +42,39 @@ useEffect(() => {
   };
 
   fetchStoreInfo();
+}, []);
+
+
+
+
+
+useEffect(() => {
+  
+  async function getPackages() {
+    try {
+     
+  
+      const response = await fetch('/api/pkg/fetchpkgs',{
+        method:"GET"
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch pkg data!");
+      }
+  
+      const data = await response.json();
+      console.log('package',data);
+  
+      setPackages(data.packages);
+  
+     
+    } catch (error) {
+      console.error("error fetching data", error);
+   
+    }
+  }
+
+ getPackages();
 }, []);
 
 
@@ -67,14 +107,17 @@ async function billingApi(prds , pkgn , price) {
 
   //taking url
   //alert(prds+pkgn+price);
+  //alert(storeInfo.domain);
 
-
+  
 
 
   let pkg_prd = prds;
   let name = pkgn;
   let pkg_price = price;
-  let url = `https://${storeInfo.domain}/admin/apps/8c92bf1c7b84097f33c3cca54fe528ab`;
+  let url = `https://${storeInfo.domain}/admin/apps/89a6c2bf533bdfdfc64d037e5fbbde9d`;
+  //let  url ='https://admin.shopify.com/store/mubashir12121/apps/tiktokapp-6';
+  //toast.success(url);
 
 
   try {
@@ -158,6 +201,9 @@ async function incrementPrdNum(c_status , c_price , c_pkg_name , c_billing_id , 
 
 
 
+//pkgs data 
+
+
 
 
 
@@ -175,83 +221,13 @@ async function incrementPrdNum(c_status , c_price , c_pkg_name , c_billing_id , 
             Pricing <span>Plan</span>
           </h2>
           <h4>List of our pricing packages</h4>
+          {/* <button onClick={getPackages}>Pkgs data</button> */}
         </div>
       </div>
     </div>
     <div className="row pricing pricing-simple text-center">
-      <div className="col-md-4">
-        <div className="pricing-item rounded-4">
-          <ul>
-            <li className="icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                version="1.1"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                width="60px"
-                height="60px"
-                x="0"
-                y="0"
-                viewBox="0 0 24 24"
-                style={{ enableBackground: "new 0 0 512 512" }}
-                xmlSpace="preserve"
-              >
-                <g>
-                  <path
-                    d="M23.508.003c-4.685-.084-10.028 2.365-13.41 6.164A12.69 12.69 0 0 0 1.402 9.87a.5.5 0 0 0 .28.851l3.854.552-.476.533a.5.5 0 0 0 .02.687l6.427 6.427a.499.499 0 0 0 .687.019l.533-.476.552 3.854c.027.188.175.326.354.386a.46.46 0 0 0 .143.022.565.565 0 0 0 .387-.161c2.285-2.285 3.61-5.432 3.671-8.664 3.803-3.389 6.272-8.73 6.163-13.409a.502.502 0 0 0-.489-.488zM18.9 8.635c-.487.487-1.127.731-1.768.731s-1.281-.244-1.768-.731a2.505 2.505 0 0 1 0-3.536c.975-.975 2.561-.975 3.536 0s.975 2.562 0 3.536zM2.724 16.905c-1.07 1.07-2.539 5.904-2.703 6.451a.502.502 0 0 0 .623.623c.547-.164 5.381-1.633 6.451-2.703a3.094 3.094 0 0 0 0-4.371 3.095 3.095 0 0 0-4.371 0z"
-                    fill="#A020F0"
-                    opacity="1"
-                    data-original="#000000"
-                  />
-                </g>
-              </svg>
-            </li>
-            <li className="pricing-header">
-              <h4>Trial Version</h4>
-              <h2>Free</h2>
-            </li>
-            <li>
-              Demo file{" "}
-              <span
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Available on pro version"
-              >
-                <i className="fas fa-info-circle"></i>
-              </span>
-            </li>
-            <li>Update</li>
-            <li>File compressed</li>
-            <li>Commercial use</li>
-            <li>
-              Support{" "}
-              <span
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Available on pro version"
-              >
-                <i className="fas fa-info-circle"></i>
-              </span>
-            </li>
-            <li>2 database</li>
-            <li>
-              Documentation{" "}
-              <span
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Available on pro version"
-              >
-                <i className="fas fa-info-circle"></i>
-              </span>
-            </li>
-            <li className="footer">
-              <a className="btn btn-dark border btn-sm rounded-5" href="#">
-                Try for free
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className="col-md-4">
+    {packages.map((pkg, index) => (
+      <div className="col-md-4" key="index">
         <div className="pricing-item rounded-4 active">
           <ul>
             <li className="icon">
@@ -281,24 +257,25 @@ async function incrementPrdNum(c_status , c_price , c_pkg_name , c_billing_id , 
               <i className="fas fa-ribbon"></i>
             </li>
             <li className="pricing-header rounded-4">
-              <h4>   Super Duper Plan   </h4>
+              <h4>   {pkg.packageName}   </h4>
               <h2>
-                <sup>$</sup> 45 <sub>/ Year</sub>
+                <sup>$</sup> {pkg.packagePrice} <sub>/ Year</sub>
               </h2>
             </li>
-            <li>Get 50 requests!</li>
+            <li>Import Tiktok Video {pkg.packageTikTokImportNumber} Number requests!</li>
             <li>
-              Update{" "}
+              {/* Update{" "}
               <span
                 data-toggle="tooltip"
                 data-placement="top"
                 title="Only for extended licence"
               >
                 <i className="fas fa-info-circle"></i>
-              </span>
+              </span> */}
             </li>
-            <li>File compressed</li>
-            <li>Commercial use</li>
+            
+              <li>{pkg.packageDesc}</li>
+            {/* <li>Commercial use</li>
             <li>
               Support{" "}
               <span
@@ -310,16 +287,17 @@ async function incrementPrdNum(c_status , c_price , c_pkg_name , c_billing_id , 
               </span>
             </li>
             <li>5 database</li>
-            <li>Documentation</li>
+            <li>Documentation</li> */}
             <li className="footer">
-              <a className="btn btn-theme effect btn-sm rounded-5" href="#" onClick={() => billingApi(50, 'Super Duper Plan' , 45)}>
+              <a className="btn btn-theme effect btn-sm rounded-5" href="#" onClick={() => billingApi(pkg.packageTikTokImportNumber, pkg.packageName , pkg.packagePrice)}>
                 Get Started
               </a>
             </li>
           </ul>
         </div>
       </div>
-      <div className="col-md-4">
+      ))}
+      {/* <div className="col-md-4">
         <div className="pricing-item rounded-4">
           <ul>
             <li className="icon">
@@ -383,7 +361,7 @@ async function incrementPrdNum(c_status , c_price , c_pkg_name , c_billing_id , 
             </li>
           </ul>
         </div>
-      </div>
+      </div> */}
     </div>
   </div>
 </section>

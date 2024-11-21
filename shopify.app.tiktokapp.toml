@@ -3,7 +3,7 @@
 client_id = "89a6c2bf533bdfdfc64d037e5fbbde9d"
 name = "TikTokApp"
 handle = "tiktokapp-6"
-application_url = "https://seat-ca-time-shut.trycloudflare.com"
+application_url = "https://oasis-advisory-highlighted-perception.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_content,read_locales,read_products,read_script_tags,read_themes,w
 
 [auth]
 redirect_urls = [
-  "https://seat-ca-time-shut.trycloudflare.com/auth/callback",
-  "https://seat-ca-time-shut.trycloudflare.com/auth/shopify/callback",
-  "https://seat-ca-time-shut.trycloudflare.com/api/auth/callback"
+  "https://oasis-advisory-highlighted-perception.trycloudflare.com/auth/callback",
+  "https://oasis-advisory-highlighted-perception.trycloudflare.com/auth/shopify/callback",
+  "https://oasis-advisory-highlighted-perception.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

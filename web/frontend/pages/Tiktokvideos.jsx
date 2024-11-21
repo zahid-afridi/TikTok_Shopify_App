@@ -187,7 +187,7 @@ const EmployeeTable = () => {
       if (response.ok) {
         setData(data.filter((item) => item._id !== id)); // Update the state by removing the deleted item
         // console.log("Row deleted successfully!");
-        toast.success("Row Deleted succesfully!");
+        toast.success("Product Deleted succesfully!");
       } else {
         const result = await response.json();
         console.error("Error deleting row: ", result.message);
@@ -195,10 +195,17 @@ const EmployeeTable = () => {
     } catch (error) {
       console.error("Error deleting row: ", error);
       //alert("error"+error);
-      toast.error("Error deleting row: ", error);
+      toast.error("Error deleting product: ", error);
     }
 
     //now we will delete from shopify db product delete api
+
+
+    //if there is no shopify id stop this 
+
+    if(s_id==null){
+      return;
+    }
 
     try {
       const response = await fetch("/api/delprd", {
@@ -463,7 +470,7 @@ const EmployeeTable = () => {
               <tr>     <th scope="col">#</th>
               <th scope="col">Image</th>
               <th scope="col">Username</th>
-              <th scope="col">Description</th>
+              {/* <th scope="col">Description</th> */}
               <th scope="col">Created Date</th>
               
               
@@ -497,7 +504,7 @@ const EmployeeTable = () => {
                     </td>
                     <td>{item.username}</td>
                    
-                    <td>{item.description}</td>
+                    {/* <td>{item.description}</td> */}
                     <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                   
                     

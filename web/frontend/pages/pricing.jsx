@@ -216,7 +216,25 @@ if(loading){
 
   return (
     <>
-<section id="pricing" className="pricing-area bg-gray">
+{packages.length==0 ? (
+  <>
+  
+  <div className="d-flex vh-100 justify-content-center align-items-center bg-light">
+      <div className="text-center p-4 bg-white rounded shadow">
+        <h1 className="text-dark fw-bold">
+          No Packages Found
+        </h1>
+        <p className="text-muted">
+          If you are the admin of the app, please add packages.
+        </p>
+      </div>
+    </div> <h1>NO PACKAGES FOUND IF YOUR ADMIN OF THE APP PLEASE ADD PACKAGES</h1>
+  
+  
+  </>
+):(
+  <>
+  <section id="pricing" className="pricing-area bg-gray">
   <div className="container">
     <div className="row">
       <div className="col-md-12">
@@ -369,6 +387,8 @@ if(loading){
     </div>
   </div>
 </section>
+  </>
+)}
 
     </>
   );

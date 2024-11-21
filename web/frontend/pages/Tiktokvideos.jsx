@@ -148,16 +148,14 @@ const EmployeeTable = () => {
       const result = await response.json();
   
       if (response.ok && result.success) {
-        // console.log("Product updated successfully:", result);
-        // Optionally, reload the page or update UI based on success
-        //window.location.reload();
+  
       } else {
         console.error("Failed to update product:", result.message);
         // Optionally, show an error message on the UI
       }
     } catch (error) {
       console.error("Error updating product:", error.message);
-      // Optionally, show an error message on the UI
+  
     }
 
 
@@ -282,107 +280,7 @@ const EmployeeTable = () => {
 
 
 
-// const addToShopify = async (cid) => {
-//   //alert("working!"+cid);
 
-//   setButtonLoading((prev) => ({ ...prev, [cid]: true }));
-
-
-//   let lastProductId; // Define outside to retain scope
-//   let dbId = cid;
-//   let embed_url;
-//   let username;
-//   let avatar;
-//   let current_id = cid;
-
-//   // First request to get the row of current_id from db 
-//   try {
-//     const id = current_id; // Replace with the actual ID you want to send
-//     const response2 = await fetch(`/api/addtoShopifyfromlisting/${id}`); // Pass id as path parameter
-  
-//     const result2 = await response2.json();
-//     console.log("Row to edit", result2);
-  
-//     embed_url = result2.data.embed_url;
-//     username = result2.data.username;
-//     avatar = result2.data.avatar;
-  
-//   } catch (error2) {
-//     console.error("Error fetching database product data:", error2.message);
-//     alert("Error fetching database product data:")
-//     return;
-//   }
-  
-
-
-//   // Insert data into Shopify product
-//   try {
-//       await insertAsProduct(embed_url, avatar, username); // Wait for insertion to complete
-//   } catch (error) {
-//       console.error("Error inserting product into Shopify:", error.message);
-//       alert("Error inserting product into Shopify:")
-//       return;
-//   }
-
-//   // Second request to get the Shopify product ID
-//   const url = "/api/testprd";
-//   try {
-//       const response = await fetch(url);
-//       if (!response.ok) {
-//           throw new Error(`Response status: ${response.status}`);
-//       }
-
-//       const json = await response.json();
-//       console.log(json);
-
-//       const data = json.prd.data;
-
-//       if (Array.isArray(data) && data.length > 0) {
-//           const lastProduct = data[data.length - 1];
-//           lastProductId = lastProduct.id;
-//           console.log("Shopify Product ID:", lastProductId);
-//       } else {
-//           console.log("No products found.");
-//           alert("no products found in shopify!")
-//       }
-//   } catch (error) {
-//       console.error("Error fetching Shopify product data:", error.message);
-//       return;
-//   }
-
-//   // Now we have both the IDs, proceed to update the product in the database
-//   if (dbId && lastProductId) {
-//       updateProductInDatabase(dbId, lastProductId);
-//       //window.location.reload();
-//       setButtonLoading((prev) => ({ ...prev, [cid]: false })); // Reset loading state for the row
-
-     
-
-
-
-//       toast.success('success');
-
-//      // setData(data.filter((item) => item._id !== cid)); // Update the state by removing the deleted item
-//       //window.location.reload();
-
-//       // setRefresh((prev)=>!prev);
-
-
-      
-
-//   } else {
-//       console.error("Failed to retrieve necessary IDs for updating the database.");
-//       alert("Failed to retrieve necessary IDs for updating the database.");
-//   }
-// };
-
-
-
-
-
-//chatgpt function for update 
-  // Function to update the product in the database
- 
   
   const addToShopify = async (cid) => {
     setButtonLoading((prev) => ({ ...prev, [cid]: true }));
@@ -484,14 +382,7 @@ const EmployeeTable = () => {
   
         const result = await response.json();
         if (response.ok) {
-            //console.log("Product updated successfully:", result);
 
-            // setData((prevData) => {
-            //   return prevData.map((item) => ({
-            //     ...item,
-            //     shopify_product_id: item.shopify_product_id || null, // Ensure it exists
-            //   }));
-            // });
 
         } else {
             console.error("Error updating product:", result.message);
@@ -512,19 +403,7 @@ const EmployeeTable = () => {
 
 
 
-      {/* <div>
-      <h1>Store Information</h1>
-      {storeInfo && (
-        <div>
-          <p>Store Name: {storeInfo.storeName}</p>
-          <p>Store Domain: {storeInfo.domain}</p>
-          <p>Country: {storeInfo.country}</p>
-          <p>Store ID: {storeInfo.Store_Id}</p>
-        </div>
-      )}
-      <h1>Data</h1>
-      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>No data available</p>}
-    </div> */}
+
 
 
 
@@ -599,7 +478,9 @@ const EmployeeTable = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="7" className="text-center">Loading...</td>
+                  <td colSpan="7" className="text-center"> <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div> </td>
                 </tr>
               ) : data.length > 0 ? (
                 data.map((item, index) => (
@@ -730,27 +611,7 @@ const EmployeeTable = () => {
                     </svg>
                   </button>
                 </td>
-                {/* <td>
-  {item.is_shopify === 1 ? (
-            <button className="shopify_btn btn bg-success text-white display-6" disabled>Uploaded!</button>
-  ) : (
-    // <button class="btn-danger" disabled={buttonLoading} onClick={() => addToShopify(item._id)}>
-    //   { buttonLoading ?  'loading...': 'Add to Shopify'}
-    // </button>
-    
 
-
-<button
-      className="shopify_btn btn bg-success text-white display-6"
-      disabled={buttonLoading[item._id]} // Check loading state for this specific row
-      onClick={() => addToShopify(item._id)}
-    >
-
-
-          {buttonLoading[item._id] ? "Loading..." : "Add to Shopify"}
-    </button>
-  )}
-</td> */}
 
 <td>
   {item.is_shopify === 1 ? (
@@ -775,7 +636,7 @@ const EmployeeTable = () => {
                 ))
               ) : (
                 <tr>
-                  {/* <td colSpan="7" className="text-center">No data available</td> */}
+                  
                 </tr>
               )}
             </tbody>
@@ -885,21 +746,12 @@ const EmployeeTable = () => {
             className="form-control"
           />
         </div>
-        {/* <div className="mb-3">
-          <input
-            type="text"
-            name="description"
-            value={currentItem.description}
-            onChange={handleInputChange}
-            placeholder="Description"
-            className="form-control"
-          />
-        </div> */}
+     
             
          
         </div>
       )}
-      {/* edit end */}
+     
               
             </div>
             <div className="modal-footer">

@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "8c92bf1c7b84097f33c3cca54fe528ab"
-application_url = "https://nut-placing-morris-resulting.trycloudflare.com"
+application_url = "https://child-societies-apparatus-wise.trycloudflare.com"
 embedded = true
 name = "TikTok_App"
 handle = "tiktok_app"
@@ -16,13 +16,13 @@ api_version = "2024-10"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = ""
+scopes = "read_content,read_locales,read_products,read_script_tags,read_themes,write_content,write_locales,write_products,write_script_tags,write_themes"
 
 [auth]
 redirect_urls = [
-  "https://nut-placing-morris-resulting.trycloudflare.com/auth/callback",
-  "https://nut-placing-morris-resulting.trycloudflare.com/auth/shopify/callback",
-  "https://nut-placing-morris-resulting.trycloudflare.com/api/auth/callback"
+  "https://child-societies-apparatus-wise.trycloudflare.com/auth/callback",
+  "https://child-societies-apparatus-wise.trycloudflare.com/auth/shopify/callback",
+  "https://child-societies-apparatus-wise.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

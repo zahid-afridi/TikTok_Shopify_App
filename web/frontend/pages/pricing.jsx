@@ -74,7 +74,7 @@ async function billingApi(prds , pkgn , price) {
   let pkg_prd = prds;
   let name = pkgn;
   let pkg_price = price;
-  let url = `https://${storeInfo.domain}/admin/apps/89a6c2bf533bdfdfc64d037e5fbbde9d`;
+  let url = `https://${storeInfo.domain}/admin/apps/8c92bf1c7b84097f33c3cca54fe528ab`;
 
 
   try {

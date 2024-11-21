@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ export default function Index() {
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  console.log('video url form state',videoUrl)
 
   const [urlToPlay, setUrlToPlay] = useState("");
   const [btnloading, setBtnloading] = useState(false);
@@ -17,33 +18,36 @@ export default function Index() {
 
   const [hasExecuted, setHasExecuted] = useState(false);
 
-  const [remPrd, setRemPrd] = useState(0);
-  console.log("tiktokcproduct form state", remPrd);
+  const [remPrd, setRemPrd] = useState('');
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+   console.log('reomve',remPrd)
+  useLayoutEffect(() => {
     const datafun = async () => {
       try {
-        setLoading(true); // Start loading
         await fetchStoreInfo(); // Fetch store info
         await fetchProductNumbers(); // Fetch product numbers
       } catch (error) {
         console.error("Error in data fetching sequence:", error);
-      } finally {
-        setLoading(false); // End loading
       }
     };
-
+  
     datafun();
   }, []);
-
+  
+  useEffect(() => {
+    // Check if remPrd has been updated
+    if (remPrd !== '') {
+      setLoading(false); // Stop the loader when remPrd is updated
+    }
+  }, [remPrd]); // Dependency on remPrd
+  
   const fetchStoreInfo = async () => {
     try {
       const response = await fetch("/api/store/info");
       if (!response.ok) {
         throw new Error("Failed to fetch store info");
       }
-
+  
       const data = await response.json();
       setStoreInfo(data); // Update storeInfo state
       console.log("Store Info Fetched:", data);
@@ -51,27 +55,23 @@ export default function Index() {
       console.error("Error fetching store info:", err.message);
     }
   };
-
+  
   const fetchProductNumbers = async () => {
     if (!storeInfo) {
-      console.warn(
-        "Store info not available yet, skipping product number fetch."
-      );
+      console.warn("Store info not available yet, skipping product number fetch.");
       return;
     }
-
+  
     try {
       const response = await fetch(
         `/api/billing/ticktokPrdNums?StoreId=${storeInfo.Store_Id}`
       );
-
+  
       const data = await response.json();
       console.log("TikTok Product Numbers:", data);
-
+  
       const TotalRemaining = data.p_num[0].tiktokProductNumber;
-      if (response.ok) {
-        setRemPrd(TotalRemaining);
-      } // Update remPrd state
+      setRemPrd(TotalRemaining); // Update remPrd state
       console.log("Total Remaining TikTok Products:", TotalRemaining);
     } catch (error) {
       console.error("Error fetching TikTok product numbers:", error);
@@ -262,7 +262,7 @@ export default function Index() {
         src="${embed_url}" 
         width="100%" 
         height="600" 
-        frameborder="0" 
+        frameBorder="0" 
         scrolling="no" 
         allow="autoplay; encrypted-media" 
         allowfullscreen
@@ -444,7 +444,7 @@ export default function Index() {
     }
   };
 
-  //checking payment status
+  
 
   async function checkpaymentdata(chargeId) {
     try {
@@ -508,7 +508,7 @@ export default function Index() {
             <div className="col-md-6 themed-grid-col d-flex justify-content-center align-items-center">
               <div className="row justify-content-center">
                 {!remPrd
-                  ? !loading && (!remPrd) < 0 && <p>You have reach your limit please upgrade</p>
+                  ? !loading && <p>You have reach your limit please upgrade</p>
                   : !loading && <p>You have products {remPrd} remaining!</p>}
 
                 {/* <button onClick={getPrd}>Products Fetch</button> */}
@@ -603,7 +603,7 @@ export default function Index() {
                         </div>
                       </button>
                     </>
-                  ) :!remPrd || remPrd < 0 ? (
+                  ) :  (
                     // "Subscribe Plan" button if product limit is reached
                     <button
                       className="button bg-danger p-0"
@@ -613,10 +613,6 @@ export default function Index() {
                         Subscribe Plan
                       </span>
                     </button>
-                  ):(
-                    <div class="spinner-border" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                    </div>
                   )}
                 </div>
               </div>

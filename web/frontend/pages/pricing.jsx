@@ -228,7 +228,7 @@ if(loading){
           If you are the admin of the app, please add packages.
         </p>
       </div>
-    </div> <h1>NO PACKAGES FOUND IF YOUR ADMIN OF THE APP PLEASE ADD PACKAGES</h1>
+    </div> 
   
   
   </>

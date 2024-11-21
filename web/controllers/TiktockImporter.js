@@ -18,7 +18,7 @@ export const TiktokImport = async (req, res) => {
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'X-RapidAPI-Key': 'e04ea4d85dmshc529ae0cb91de78p15ffa5jsn3a765cb92b98', 
+          'X-RapidAPI-Key': '9067343c3bmshe3cede364672671p133b24jsn54417485dcc7', 
           'X-RapidAPI-Host': 'tiktok-video-downloader-api.p.rapidapi.com'
         }
       });
@@ -43,6 +43,7 @@ export const TiktokImport = async (req, res) => {
         embed_url: made_url,
         check_count:1,
         shop_id: store_id,
+        Video_url:url
       });
   
       // Save the new record to the database

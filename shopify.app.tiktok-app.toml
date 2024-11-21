@@ -1,15 +1,15 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "8c92bf1c7b84097f33c3cca54fe528ab"
-application_url = "https://child-societies-apparatus-wise.trycloudflare.com"
+application_url = "https://venues-vault-malta-friend.trycloudflare.com"
 embedded = true
 name = "TikTok_App"
 handle = "tiktok_app"
 
 [build]
-include_config_on_deploy = true
-dev_store_url = "paymenttest-store.myshopify.com"
 automatically_update_urls_on_dev = true
+dev_store_url = "paymenttest-store.myshopify.com"
+include_config_on_deploy = true
 
 [webhooks]
 api_version = "2024-10"
@@ -20,10 +20,15 @@ scopes = "read_content,read_locales,read_products,read_script_tags,read_themes,w
 
 [auth]
 redirect_urls = [
-  "https://child-societies-apparatus-wise.trycloudflare.com/auth/callback",
-  "https://child-societies-apparatus-wise.trycloudflare.com/auth/shopify/callback",
-  "https://child-societies-apparatus-wise.trycloudflare.com/api/auth/callback"
+  "https://venues-vault-malta-friend.trycloudflare.com/auth/callback",
+  "https://venues-vault-malta-friend.trycloudflare.com/auth/shopify/callback",
+  "https://venues-vault-malta-friend.trycloudflare.com/api/auth/callback"
 ]
+
+[app_proxy]
+url = "https://venues-vault-malta-friend.trycloudflare.com/customapi"
+subpath = "proxy"
+prefix = "apps"
 
 [pos]
 embedded = false

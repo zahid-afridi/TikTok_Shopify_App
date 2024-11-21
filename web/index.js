@@ -52,7 +52,17 @@ app.post(
 // also add a proxy rule for them in web/frontend/vite.config.js
 
 app.use("/api/*", shopify.validateAuthenticatedSession());
-
+app.use("/customapi/*", authenticateUser);
+async function authenticateUser(req,res,next){
+  let shop=req.query.shop
+  let storeName= await shopify.config.sessionStorage.findSessionsByShop(shop)
+  console.log('storename for view',storeName)
+  if (shop === storeName[0].shop) {
+    next()
+  }else{
+    res.send('user not authersiozed')
+  }
+}
 app.use(express.json());
 
 app.use('/api',TiktokImporterRoutes)
@@ -195,37 +205,24 @@ app.get("/api/testprd", async (_req, res) => {
 
 
 
-// product update api starts 
-// app.put("/api/prdUpd/:productId", async (req, res) => {
-//   try {
+app.get('/customapi/viewonTiktok/:id', async (req, res) => {
+  try {
+    const shopifyId = req.params.id; 
+    console.log('product id',shopifyId)
+    const product = await TiktokModel.findOne({ shopify_product_id: shopifyId });
 
-    
-//     const {title , body_html}=req.body;
+    // Check if the product exists
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
 
-    
-
-//     const product =  new shopify.api.rest.Product({session: res.locals.shopify.session});
-//     product.title = title;
-//     product.body_html = body_html;
-    
-//     product.id = productId;
-    
-    
-
-//     await product.save({
-//       update: true,
-//     });
-
-
-//     res.status(200).json({ success: true, message: "Product updated successfully",product});
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({success:false,message:"internal sever eroro"})
-    
-//   }
-// });
-
-// end
+    // If product is found, send it as a response
+    res.status(200).json({ success: true, data: product });
+  } catch (error) {
+    console.error('viewoneebay error:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
 
 app.put("/api/prdUpd/:productId", async (req, res) => {
   try {

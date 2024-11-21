@@ -216,14 +216,15 @@ export default function Index() {
       console.log(result.data.embed_url);
       console.log(result.data.avatar);
       console.log(result.data.username);
-
+      setUrl("");
+      setBtnloading(false);
       //now when data saved succesfully TicktokProductnumber ko hum decrement kryngy store_billings table sey
-
+      const modal = new window.bootstrap.Modal(modalRef.current);
+      modal.show();
       const decrement_data = await decrementPrdNum();
       console.log("decrement data ", decrement_data);
 
-      setUrl("");
-      setBtnloading(false);
+   
       // Destructure the download_url from the result
       const { data } = result;
       const newDownloadUrl = data.download_url;
@@ -237,8 +238,7 @@ export default function Index() {
       setDownloadUrl(newDownloadUrl); // Set the download URL
       setAvatar(avatar);
 
-      const modal = new window.bootstrap.Modal(modalRef.current);
-      modal.show();
+      
     } catch (error) {
       console.error("Error saving data:", error.message);
       setBtnloading(false);

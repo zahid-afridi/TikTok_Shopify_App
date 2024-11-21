@@ -1,5 +1,6 @@
 import React, { useState , useEffect } from "react";
 import toast from "react-hot-toast";
+import Spinner from "../components/Spinner";
 
 export default function pricing() {
 
@@ -13,6 +14,7 @@ const [imporRequests , setImportRequests] = useState(null);
 const [storeInfo, setStoreInfo] = useState(null);
 const [loading, setLoading] = useState(true);
 const [error, setError] = useState(null);
+
 
 //pkgdata     desc ,  name  ,  price , productNumbers
 
@@ -205,7 +207,9 @@ async function incrementPrdNum(c_status , c_price , c_pkg_name , c_billing_id , 
 
 
 
-
+if(loading){
+  return <Spinner/>
+}
 
 
 
